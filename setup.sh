@@ -1,38 +1,39 @@
-#!/bin/bash
-set -e
+#!/data/data/com.termux/files/usr/bin/bash
+echo "🚀 Starting Ncc bot setup (Termux / Online IDE compatible)..."
 
-echo "🚀 Starting Spyther bot environment setup (system Python)..."
+# 1️⃣ Update & upgrade packages
+echo "📦 Updating system packages..."
+pkg update -y
+pkg upgrade -y
 
-# ---------------- System packages ----------------
-echo "📦 Installing system dependencies..."
-sudo apt update
-sudo apt install -y \
-    python3-pip python3-dev build-essential \
-    libffi-dev libssl-dev libsqlite3-dev libjpeg-dev zlib1g-dev \
-    curl git wget unzip xvfb libnss3 libatk1.0-0 libcups2 \
-    libxcomposite1 libxdamage1 libxrandr2 libxkbcommon0 libpango-1.0-0 \
-    libgbm1 fonts-liberation libappindicator3-1 xdg-utils \
-    ffmpeg procps psmisc ca-certificates
+# 2️⃣ Install system dependencies
+echo "📦 Installing dependencies..."
+pkg install -y python git ffmpeg wget curl nodejs
 
-# Upgrade pip, setuptools, wheel system-wide
-echo "🐍 Upgrading pip, setuptools, wheel..."
-sudo -H python3 -m pip install --upgrade pip setuptools wheel
+# 3️⃣ Install Python packages
+echo "🐍 Installing Python dependencies..."
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install python-dotenv playwright
 
-# ---------------- Python packages ----------------
-echo "📦 Installing Python dependencies system-wide..."
-sudo -H python3 -m pip install python-dotenv cryptography httpx
-sudo -H python3 -m pip install "python-telegram-bot<23,>=22.0"
-sudo -H python3 -m pip install instagrapi
-sudo -H python3 -m pip install playwright
-sudo -H python3 -m pip install playwright-stealth==1.0.6
-
-# ---------------- Playwright browsers ----------------
+# 4️⃣ Install Playwright browsers (headless)
 echo "🌐 Installing Playwright browsers..."
-sudo -H python3 -m playwright install
-sudo -H python3 -m playwright install-deps
-playwright install
-# ---------------- Create sessions folder ----------------
-mkdir -p sessions
+playwright install chromium
 
-echo "✅ Setup complete! You can now run your bot with:"
-echo "python3 bot.py"
+# 5️⃣ Handle .env file
+echo "📁 Setting up environment variables..."
+if [ -f "rename to .env" ]; then
+    mv "rename to .env" .env
+    echo "✅ .env file renamed and ready"
+else
+    echo "⚠️ No 'rename to .env' file found. Please create a .env file with your bot token."
+fi
+
+# 6️⃣ Make scripts executable
+chmod +x *.sh
+
+# 7️⃣ Instructions
+echo "✅ Setup complete!"
+echo "Run the bot with:"
+echo "python igbot5.py  # or python ig.py depending on main script"
+echo "Use headless mode for Playwright to avoid GUI issues."
